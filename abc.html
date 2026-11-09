@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <style>
+
+#tabuleiro {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 5px;
+}
+
+.casa {
+    background-color: #90EE90;
+    border: 2px solid #000000;
+    color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    cursor: pointer;
+}
+main{
+    display: flex;
+    color: #FFFFFF;
+    background-color: #555555;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+header{
+    height: 120px;
+    color: #FFFFFF;
+    background-color: #333333;
+    display: flex;
+    flex-direction: column;
+}
+body{
+    margin: 0;
+    padding: 0;
+}
+</style>
+    <title>Jogo da Velha</title>
+</head>
+<body>
+    <header>
+        <h2>Jogo da Velha</h2>
+        <h6>By Ivan Batista</h6>
+    </header>
+    <main>
+    <div id="tabuleiro">
+        <div class="casa" id="casa1"></div>
+        <div class="casa" id="casa2"></div>
+        <div class="casa" id="casa3"></div>
+        <div class="casa" id="casa4"></div>
+        <div class="casa" id="casa5"></div>
+        <div class="casa" id="casa6"></div>
+        <div class="casa" id="casa7"></div>
+        <div class="casa" id="casa8"></div>
+        <div class="casa" id="casa9"></div>
+    </div>
+
+    <p id="mensagem">Vez do jogador: X</p>
+
+    <button id="reiniciar">Reiniciar</button>
+</main>
+</body>
+<script>
+    const casas = document.querySelectorAll(".casa");
+    const mensagem = document.getElementById("mensagem");
+    const reiniciar = document.getElementById("reiniciar");
+     const combinacoes = [
+    // horizontal
+    ["casa1", "casa2", "casa3"],
+    ["casa4", "casa5", "casa6"],
+    ["casa7", "casa8", "casa9"],
+
+    // vertical
+    ["casa1", "casa4", "casa7"],
+    ["casa2", "casa5", "casa8"],
+    ["casa3", "casa6", "casa9"],
+
+    // diagonal
+    ["casa1", "casa5", "casa9"],
+    ["casa3", "casa5", "casa7"]
+];
+
+    let jogador = "X";
+    let jogoAtivo = true;
+
+    casas.forEach(casa => {
+        casa.addEventListener("click", () => {
+            if(casa.textContent !== "" || !jogoAtivo){
+                return;
+            }
+            casa.textContent = jogador;
+            if (verificar()) {
+                mensagem.textContent = "Jogador: " + jogador + " venceu";
+                jogoAtivo = false;
+                return;
+            }
+            if (verificaEmpate()) {
+                mensagem.textContent = "O jogo empatou";
+                jogoAtivo = false;
+                return;
+            }
+            jogador = jogador === "X" ? "O" : "X";
+            mensagem.textContent = "Vez do jogador: " + jogador;
+        });
+    });
+    reiniciar.addEventListener("click", reiniciaJogo);
+   
+function verificar(){
+    for(let combinacao of combinacoes){
+        let [a, b, c] = combinacao;
+
+        let casaA = document.getElementById(a).textContent;
+        let casaB = document.getElementById(b).textContent;
+        let casaC = document.getElementById(c).textContent;
+
+        if(casaA !== "" && casaA === casaB && casaB === casaC){
+            return true;
+        }
+    }
+    return false;
+}
+function verificaEmpate(){
+    for(let casa of casas){
+        if(casa.textContent === ""){
+            return false;
+        }
+    }
+    return true;
+}
+function reiniciaJogo(){
+    casas.forEach(casa => {
+        casa.textContent = "";
+    });
+    jogador = "X";
+    jogoAtivo = true;
+    mensagem.textContent = "Vez do jogador: " + jogador
+}
+</script>
+</html>
